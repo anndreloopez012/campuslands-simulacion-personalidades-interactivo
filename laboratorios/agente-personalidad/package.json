@@ -1,0 +1,13 @@
+{
+  "name": "agente-personalidad",
+  "version": "1.0.0",
+  "description": "Laboratorio de Campuslands: agente de consola con personalidad Big Five. Modo simulado sin clave; Claude u OpenAI con clave.",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test",
+    "chat": "node chat.mjs personas/hr-agent.json"
+  },
+  "license": "MIT"
+}
