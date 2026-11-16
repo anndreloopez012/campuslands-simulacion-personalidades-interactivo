@@ -531,6 +531,22 @@ main { min-width: 0; padding: 0 clamp(16px, 4vw, 56px) 40px; overflow-x: clip; }
 .term { margin: 14px 0; padding: 18px; border-radius: var(--r-md); background: var(--term); color: var(--term-ink); font-size: .86rem; line-height: 1.65; overflow-x: auto; }
 .c-com { color: #8e86a2; }
 
+/* Videos explicativos */
+.video-slot { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); gap: 24px; align-items: center; margin-bottom: 36px; }
+.video-slot__aside { display: flex; flex-direction: column; gap: 10px; }
+.video-slot__q { font: 700 1.25rem/1.35 var(--display); color: var(--ink); }
+.explainer__meta b { color: var(--term-ink); }
+
+/* Teatro de video */
+.theater { width: min(1200px, 96vw); max-height: 96vh; padding: 0; border: 0; border-radius: 22px; background: var(--term); color: var(--term-ink); }
+.theater::backdrop { background: rgba(10, 8, 14, .82); backdrop-filter: blur(4px); }
+.theater__inner { position: relative; }
+.theater video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.theater__close { position: absolute; top: 10px; right: 10px; z-index: 2; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .6); color: #fff; font-size: 1.5rem; line-height: 1; }
+.theater__chapters { display: flex; gap: 6px; overflow-x: auto; padding: 12px; }
+.theater__chapters button { flex: none; border: 1px solid var(--term-line); border-radius: 999px; background: var(--term-2); color: var(--term-ink); padding: 6px 14px; font-size: .85rem; font-weight: 700; }
+.theater__chapters button.is-current { border-color: var(--neon-req); color: var(--neon-req); }
+
 /* ---------- Modo proyector ---------- */
 body.is-focus { --side: 0px; font-size: 19px; }
 body.is-focus .sidebar { display: none; }
@@ -602,7 +618,7 @@ body.is-focus main { max-width: 1500px; margin: 0 auto; }
   .checkpoint { width: 100%; }
 }
 @media (max-width: 1180px) {
-  .mixer, .workshop, .matrix-lab__grid, .two-col { grid-template-columns: minmax(0, 1fr); }
+  .mixer, .workshop, .matrix-lab__grid, .two-col, .video-slot { grid-template-columns: minmax(0, 1fr); }
   .evaluator { position: static; }
   .work-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
