@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Laboratorio interactivo de Campuslands: fundamentos de simulación de personalidades en agentes de IA. Anatomía de un asistente eficaz, modelo Big Five, prompts de personalidad y agentes empresariales de Recursos Humanos y Finanzas." />
+    <meta name="theme-color" content="#14121a" />
+    <title>Estación Personas · Simulación de personalidades en IA | Campuslands</title>
+    <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2314121a'/%3E%3Ccircle cx='32' cy='14' r='6' fill='%23f5a300'/%3E%3Ccircle cx='49' cy='27' r='6' fill='%231fa7e6'/%3E%3Ccircle cx='43' cy='47' r='6' fill='%23f26b1d'/%3E%3Ccircle cx='21' cy='47' r='6' fill='%237cb82f'/%3E%3Ccircle cx='15' cy='27' r='6' fill='%23e5322d'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css?v=2" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Ir al inicio">
+        <span class="brand__mark brand__mark--five" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><circle cx="24" cy="9" r="5" class="t-o" /><circle cx="38" cy="19" r="5" class="t-c" /><circle cx="33" cy="36" r="5" class="t-e" /><circle cx="15" cy="36" r="5" class="t-a" /><circle cx="10" cy="19" r="5" class="t-n" /></svg>
+        </span>
+        <span class="brand__text">
+          <small>Campuslands · Inteligencia Artificial II</small>
+          <strong>Estación Personas <em>/ simulación de personalidades</em></strong>
+        </span>
+      </a>
+
+      <div class="session-tools" aria-label="Herramientas de la sesión">
+        <div class="xp" title="Puntos de experiencia">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.6 6.3L21 9l-5 4.4L17.5 20 12 16.6 6.5 20 8 13.4 3 9l6.4-.7z" /></svg>
+          <span><b id="xpValue">0</b> XP</span>
+        </div>
+        <div class="timer" aria-label="Cronómetro de la sesión">
+          <span class="timer__pulse" aria-hidden="true"></span>
+          <span id="timerDisplay" class="timer__time" aria-live="polite">60:00</span>
+          <button id="timerToggle" class="icon-button" type="button" aria-label="Iniciar cronómetro" title="Iniciar cronómetro">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z" /></svg>
+          </button>
+          <button id="timerReset" class="icon-button" type="button" aria-label="Reiniciar cronómetro" title="Reiniciar cronómetro">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.34 5.66M20 4v7h-7" /></svg>
+          </button>
+        </div>
+        <button id="focusToggle" class="pill-button" type="button" aria-pressed="false" title="Modo proyector: letra grande y sin menú">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5" /></svg>
+          <span>Modo proyector</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="shell">
+      <aside class="sidebar" aria-label="Ruta de la guía">
+        <div class="progress-card">
+          <div class="progress-card__head"><span>Tu progreso</span><strong id="progressLabel">0%</strong></div>
+          <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+          <p id="progressMessage">10 estaciones. Un agente con la personalidad justa para su trabajo.</p>
+        </div>
+        <nav class="route" aria-label="Estaciones">
+          <a href="#inicio" data-nav="inicio"><i>00</i><span><strong>Bienvenida</strong><small>Qué vas a lograr</small></span></a>
+          <a href="#concepto" data-nav="concepto"><i>01</i><span><strong>¿Qué es simular?</strong><small>Mitos y realidades</small></span></a>
+          <a href="#anatomia" data-nav="anatomia"><i>02</i><span><strong>Asistente eficaz</strong><small>Dominio + comunicación</small></span></a>
+          <a href="#bigfive" data-nav="bigfive"><i>03</i><span><strong>Los Cinco Grandes</strong><small>El modelo Big Five</small></span></a>
+          <a href="#trabajo" data-nav="trabajo"><i>04</i><span><strong>Rasgos y trabajo</strong><small>Cada rasgo, su rol</small></span></a>
+          <a href="#mezclador" data-nav="mezclador"><i>05</i><span><strong>Mezclador</strong><small>Del rasgo al prompt</small></span></a>
+          <a href="#empresa" data-nav="empresa"><i>06</i><span><strong>Agentes empresariales</strong><small>RR. HH. vs Finanzas</small></span></a>
+          <a href="#ejercicio" data-nav="ejercicio"><i>07</i><span><strong>Ejercicio</strong><small>Diseña tu agente</small></span></a>
+          <a href="#laboratorio" data-nav="laboratorio"><i>08</i><span><strong>Laboratorio</strong><small>Pruébalo con una IA real</small></span></a>
+          <a href="#reto" data-nav="reto"><i>09</i><span><strong>Reto final</strong><small>10 preguntas · glosario</small></span></a>
+        </nav>
+        <button class="ghost-button" type="button" data-reset-progress>Reiniciar progreso</button>
+      </aside>
+
+      <main id="contenido">
+        <!-- ============ 00 · BIENVENIDA ============ -->
+        <section id="inicio" class="station hero" data-station="inicio">
+          <div class="hero__copy">
+            <span class="eyebrow">Inteligencia Artificial II · Sesión 07</span>
+            <h1>El mismo modelo, cinco perillas y <em>una personalidad</em> distinta.</h1>
+            <p class="lead">
+              Un modelo de lenguaje no tiene carácter propio, pero puede <strong>actuar</strong> como alguien cálido, formal, prudente o entusiasta si se lo pides bien. Aquí vas a aprender a diseñar esa forma de actuar con el <strong>modelo de los Cinco Grandes</strong> y a convertirla en un prompt para agentes de empresa.
+            </p>
+            <div class="hero__actions">
+              <button class="primary-button" type="button" data-start-lab>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z" /></svg>
+                <span>Empezar la sesión</span>
+              </button>
+              <a class="text-link" href="#mezclador">Ir directo al mezclador</a>
+            </div>
+            <ul class="hero__facts">
+              <li><b>5</b><span>rasgos del modelo Big Five, en vivo</span></li>
+              <li><b>6</b><span>simuladores para practicar sin clave</span></li>
+              <li><b>1</b><span>ejercicio evaluable con rúbrica y entrega</span></li>
+            </ul>
+          </div>
+
+          <figure class="persona-orbit" aria-label="Animación: cinco rasgos de personalidad giran alrededor de un agente de IA">
+            <svg viewBox="0 0 520 470" role="img">
+              <circle class="persona-orbit__ring" cx="260" cy="235" r="170" />
+              <circle class="persona-orbit__ring persona-orbit__ring--in" cx="260" cy="235" r="110" />
+              <g class="persona-orbit__spin">
+                <g transform="translate(260 65)"><g class="trait-dot" style="--c: var(--t-o)"><circle r="40" /><text y="-4">Apertura</text><text y="14" class="trait-dot__en">Openness</text></g></g>
+                <g transform="translate(422 183)"><g class="trait-dot" style="--c: var(--t-c)"><circle r="40" /><text y="-4">Responsab.</text><text y="14" class="trait-dot__en">Conscient.</text></g></g>
+                <g transform="translate(360 373)"><g class="trait-dot" style="--c: var(--t-e)"><circle r="40" /><text y="-4">Extraversión</text><text y="14" class="trait-dot__en">Extraversion</text></g></g>
+                <g transform="translate(160 373)"><g class="trait-dot" style="--c: var(--t-a)"><circle r="40" /><text y="-4">Amabilidad</text><text y="14" class="trait-dot__en">Agreeable.</text></g></g>
+                <g transform="translate(98 183)"><g class="trait-dot" style="--c: var(--t-n)"><circle r="40" /><text y="-4">Neurotic.</text><text y="14" class="trait-dot__en">Neuroticism</text></g></g>
+              </g>
+              <g class="persona-orbit__core" transform="translate(260 235)">
+                <rect x="-62" y="-50" width="124" height="100" rx="28" />
+                <circle cx="-22" cy="-6" r="9" class="eye" /><circle cx="22" cy="-6" r="9" class="eye" />
+                <path d="M-20 22 Q0 34 20 22" class="mouth" />
+                <path d="M0 -50 V-68" class="antenna" /><circle cy="-72" r="6" class="antenna-tip" />
+              </g>
+            </svg>
+            <img class="wire-map__orbit" src="assets/img/orbit.png" alt="" width="180" height="180" />
+            <figcaption>Sin rasgos definidos, el agente responde <b>genérico</b>. Con ellos, responde <b>como lo necesita tu empresa</b>.</figcaption>
+          </figure>
+
+          <div class="outcomes">
+            <h2 class="section-title">Al terminar vas a poder…</h2>
+            <ol class="outcomes__list">
+              <li><b>RA 1</b> Explicar qué es simular una personalidad y qué no es (no hay emociones ni conciencia).</li>
+              <li><b>RA 2</b> Reconocer los dos pilares de un asistente eficaz: conocimiento del dominio y habilidades comunicativas.</li>
+              <li><b>RA 3</b> Describir los cinco rasgos del modelo Big Five y sus polos alto y bajo.</li>
+              <li><b>RA 4</b> Relacionar cada rasgo con roles del entorno laboral.</li>
+              <li><b>RA 5</b> Escribir un prompt de sistema que asigne niveles de rasgos a un agente.</li>
+              <li><b>RA 6</b> Diseñar, probar y documentar un agente empresarial con tono, lenguaje, objetivo y límites.</li>
+            </ol>
+          </div>
+          <button class="checkpoint" type="button" data-checkpoint="inicio"><span class="checkpoint__box"></span><span>Listo, entiendo la meta de la sesión</span></button>
+        </section>
+
+        <!-- ============ 01 · CONCEPTO ============ -->
+        <section id="concepto" class="station" data-station="concepto">
+          <header class="station__head">
+            <span class="station__num">01</span>
+            <div>
+              <span class="eyebrow">Fundamentos · RA 1</span>
+              <h2>¿Qué significa simular una personalidad?</h2>
+              <p>Consiste en <strong>diseñar instrucciones</strong> para que un modelo adopte un estilo de comunicación, una forma de razonar, un tono, una actitud o un rol determinado durante una interacción.</p>
+            </div>
+          </header>
+
+          <div class="two-col">
+            <div class="concept-stack">
+              <article class="concept concept--accent">
+                <h3>Lo que sí es</h3>
+                <p>Una <strong>representación lingüística y conductual basada en instrucciones</strong>. El modelo ajusta su manera de responder según los parámetros definidos en el prompt.</p>
+                <div class="param-chips" aria-label="Parámetros que se ajustan desde el prompt">
+                  <span>tono</span><span>nivel técnico</span><span>estilo pedagógico</span><span>formalidad</span><span>tipo de usuario</span><span>contexto de uso</span>
+                </div>
+              </article>
+              <article class="concept">
+                <h3>Lo que no es</h3>
+                <p>No significa que el modelo tenga una personalidad real, <strong>emociones propias</strong> o <strong>conciencia</strong>. Cuando un agente «se alegra», está eligiendo palabras alegres porque se lo pediste.</p>
+                <p class="note">Piensa en un actor de doblaje: puede sonar furioso o tierno en cada escena, pero sigue un guion. El prompt es ese guion.</p>
+              </article>
+            </div>
+            <div class="concept-stack">
+              <h3 class="mini-title">Juego: ¿mito o realidad? <small id="mythScore">0/6</small></h3>
+              <p class="muted">Lee cada frase y decide.</p>
+              <div class="myths" id="myths"></div>
+            </div>
+          </div>
+          <button class="checkpoint" type="button" data-checkpoint="concepto"><span class="checkpoint__box"></span><span>Entiendo qué es (y qué no es) simular</span></button>
+        </section>
+
+        <!-- ============ 02 · ANATOMÍA ============ -->
+        <section id="anatomia" class="station" data-station="anatomia">
+          <header class="station__head">
+            <span class="station__num">02</span>
+            <div>
+              <span class="eyebrow">Anatomía de un asistente eficaz · RA 2</span>
+              <h2>Querer ayudar no basta: se necesitan dos pilares</h2>
+              <p>Para que un asistente, humano o de IA, sea verdaderamente eficaz necesita <strong>conocimiento del dominio</strong> y <strong>habilidades comunicativas</strong>. Sin uno de los dos, la ayuda se queda corta.</p>
+            </div>
+          </header>
+
+          <div class="pillars">
+            <article class="pillar pillar--domain">
+              <span class="pillar__tag">Pilar 1</span>
+              <h3>Conocimiento del dominio</h3>
+              <p class="muted">La base del asesoramiento correcto.</p>
+              <p>Información <strong>actual, precisa y contextualizada</strong>. Permite responder de forma específica y útil, evitando generalidades vacías.</p>
+              <p class="small">En Recursos Humanos no basta con responder preguntas: hay que conocer las políticas internas, el estado actual de la fuerza laboral y otra información sensible de los empleados.</p>
+            </article>
+            <article class="pillar pillar--comm">
+              <span class="pillar__tag">Pilar 2</span>
+              <h3>Habilidades comunicativas</h3>
+              <p class="muted">El puente entre el saber y la acción.</p>
+              <p>El conocimiento no vale si no se transmite bien. Se necesita un <strong>lenguaje compartido</strong> (un sistema de codificación y decodificación común) y un estilo alineado con el tema y con quien escucha.</p>
+              <p class="small">La personalidad que vas a simular vive aquí: decide cómo suena el conocimiento.</p>
+            </article>
+          </div>
+
+          <div class="matrix-lab">
+            <div class="matrix-lab__head">
+              <h3 class="mini-title">Simulador: enciende y apaga los pilares</h3>
+              <p class="muted">Una empleada pregunta: <q>¿Cuántos días de vacaciones me quedan?</q> Mira cómo cambia la respuesta.</p>
+            </div>
+            <div class="matrix-lab__grid">
+              <div class="toggles">
+                <button class="switch" type="button" role="switch" aria-checked="false" data-pillar="dominio"><span class="switch__knob"></span><span><b>Conocimiento del dominio</b><small>Política interna y registro de la empleada</small></span></button>
+                <button class="switch" type="button" role="switch" aria-checked="false" data-pillar="comunicacion"><span class="switch__knob"></span><span><b>Habilidades comunicativas</b><small>Tono cercano, claro y orientado a la acción</small></span></button>
+                <div class="matrix" id="matrix" aria-hidden="true">
+                  <span data-cell="00">Ni sabe<br />ni explica</span><span data-cell="01">Explica bien,<br />no sabe</span><span data-cell="10">Sabe,<br />no explica</span><span data-cell="11">Asistente<br />eficaz</span>
+                </div>
+              </div>
+              <div class="chat chat--light" aria-live="polite">
+                <div class="bubble bubble--user">¿Cuántos días de vacaciones me quedan?</div>
+                <div class="bubble bubble--bot" id="pillarAnswer"></div>
+                <p class="verdict" id="pillarVerdict"></p>
+              </div>
+            </div>
+          </div>
+          <button class="checkpoint" type="button" data-checkpoint="anatomia"><span class="checkpoint__box"></span><span>Conozco los dos pilares de un asistente eficaz</span></button>
+        </section>
+
+        <!-- ============ 03 · BIG FIVE ============ -->
+        <section id="bigfive" class="station" data-station="bigfive">
+          <header class="station__head">
+            <span class="station__num">03</span>
+            <div>
+              <span class="eyebrow">Los cinco factores de la personalidad · RA 3</span>
+              <h2>El modelo de los Cinco Grandes (Big Five)</h2>
+              <p>También conocido como <strong>Five Factor Model</strong>, es una de las herramientas más utilizadas en psicología para comprender los rasgos de personalidad. Clasifica a las personas en cinco dimensiones amplias, que se recuerdan con la sigla <strong>OCEAN</strong>.</p>
+            </div>
+          </header>
+
+          <div class="ocean" id="ocean" role="tablist" aria-label="Rasgos del modelo Big Five"></div>
+          <div class="trait-panel" id="traitPanel" aria-live="polite"></div>
+          <p class="note">Las palabras de arriba y de abajo de cada círculo son los <strong>extremos</strong> del rasgo, y casi todos son problemáticos: el perfeccionismo extremo agota y la credulidad extrema te vuelve fácil de engañar. Por eso un buen agente rara vez lleva un rasgo al máximo.</p>
+          <button class="checkpoint" type="button" data-checkpoint="bigfive"><span class="checkpoint__box"></span><span>Puedo nombrar los cinco rasgos y sus extremos</span></button>
+        </section>
+
+        <!-- ============ 04 · RASGOS Y TRABAJO ============ -->
+        <section id="trabajo" class="station" data-station="trabajo">
+          <header class="station__head">
+            <span class="station__num">04</span>
+            <div>
+              <span class="eyebrow">Dimensiones y entorno laboral · RA 4</span>
+              <h2>Cada rasgo brilla en un tipo de trabajo</h2>
+              <p>Los rasgos no son buenos ni malos: encajan mejor o peor con cada rol. Toca las tarjetas para ver en qué roles destaca cada uno y después pon a prueba tu criterio.</p>
+            </div>
+          </header>
+
+          <div class="work-cards" id="workCards"></div>
+
+          <div class="role-game">
+            <h3 class="mini-title">Juego: ¿qué rasgo alto buscarías? <small id="roleScore">0/6</small></h3>
+            <p class="muted">Para cada puesto elige el rasgo que más pesa.</p>
+            <div class="method-quiz" id="roleQuiz"></div>
+          </div>
+          <button class="checkpoint" type="button" data-checkpoint="trabajo"><span class="checkpoint__box"></span><span>Relaciono rasgos con roles</span></button>
+        </section>
+
+        <!-- ============ 05 · MEZCLADOR ============ -->
+        <section id="mezclador" class="station" data-station="mezclador">
+          <header class="station__head">
+            <span class="station__num">05</span>
+            <div>
+              <span class="eyebrow">Implementación · RA 5</span>
+              <h2>Mezclador de personalidad: del rasgo al prompt</h2>
+              <p>Una de las aplicaciones más interesantes del Big Five en IA es <strong>instruir a un agente para que simule comportamientos humanos</strong> según puntuaciones en cada rasgo, dentro de límites predefinidos y controlados. Mueve las perillas, escribe el mensaje y mira el prompt y la respuesta.</p>
+            </div>
+          </header>
+
+          <div class="mixer">
+            <div class="mixer__controls">
+              <div class="presets" aria-label="Perfiles de ejemplo">
+                <span class="muted small">Perfiles:</span>
+                <button type="button" class="chip" data-profile="diapositiva">Ejemplo de la clase</button>
+                <button type="button" class="chip" data-profile="fiestero">El alma de la fiesta</button>
+                <button type="button" class="chip" data-profile="ansioso">Preocupón</button>
+                <button type="button" class="chip" data-profile="hr">Agente de RR. HH.</button>
+              </div>
+              <div class="knobs" id="knobs"></div>
+              <label class="field">
+                <span>Mensaje del usuario</span>
+                <select id="scenario">
+                  <option value="invitacion">«Hola, ¿te gustaría venir conmigo y mis amigos a tomar una cerveza a la tienda?»</option>
+                  <option value="error">«Me equivoqué en el reporte que entregué y mi jefe está molesto. ¿Qué hago?»</option>
+                  <option value="cambio">«Mañana cambiamos todo el proyecto a una tecnología que nadie del equipo conoce.»</option>
+                  <option value="libre">Escribir mi propio mensaje…</option>
+                </select>
+              </label>
+              <label class="field" id="freeField" hidden>
+                <span>Tu mensaje</span>
+                <input id="freeText" type="text" maxlength="160" placeholder="Escribe lo que el usuario le diría al agente" />
+              </label>
+              <label class="compare-toggle"><input type="checkbox" id="compareOn" /> <span>Comparar: cambia <b>un solo rasgo</b> y mira la diferencia</span></label>
+              <div class="compare-pick" id="comparePick" hidden>
+                <select id="compareTrait" aria-label="Rasgo a cambiar"></select>
+                <select id="compareLevel" aria-label="Nuevo nivel"><option value="baja">BAJA</option><option value="media">MEDIA</option><option value="alta">ALTA</option></select>
+              </div>
+            </div>
+
+            <div class="mixer__out">
+              <div class="prompt-box">
+                <div class="prompt-box__bar"><span class="tagline">Prompt generado</span><button class="mini-button" type="button" data-copy="#promptText">Copiar</button></div>
+                <pre id="promptText"></pre>
+              </div>
+              <div class="chat" aria-live="polite">
+                <div class="bubble bubble--user" id="userMsg"></div>
+                <div class="replies" id="replies"></div>
+                <div class="legend" id="legend"></div>
+              </div>
+            </div>
+          </div>
+          <p class="note">Esta es una <strong>simulación didáctica</strong>: la página arma la respuesta con frases preparadas para que veas qué parte aporta cada rasgo (cada frase está subrayada con el color de su rasgo). Un modelo real redacta con libertad; lo vas a comprobar en la estación 08.</p>
+          <button class="checkpoint" type="button" data-checkpoint="mezclador"><span class="checkpoint__box"></span><span>Sé convertir rasgos en un prompt</span></button>
+        </section>
+
+        <!-- ============ 06 · AGENTES EMPRESARIALES ============ -->
+        <section id="empresa" class="station" data-station="empresa">
+          <header class="station__head">
+            <span class="station__num">06</span>
+            <div>
+              <span class="eyebrow">Agentes empresariales · RA 5 y RA 6</span>
+              <h2>Recursos Humanos y Finanzas: dos personalidades, una empresa</h2>
+              <p>La personalidad influye directamente en el estilo de comunicación y, por ende, en la eficiencia con que se transmite el conocimiento. Hay patrones claros por área. Veamos dos áreas que existen en cualquier empresa.</p>
+            </div>
+          </header>
+
+          <div class="agents">
+            <article class="agent-card agent-card--hr">
+              <header><span class="agent-card__icon" aria-hidden="true">RH</span><div><h3>HR Agent</h3><p>Amigable y empático</p></div></header>
+              <dl>
+                <dt>Tono</dt><dd>Casual, cálido y comprensivo.</dd>
+                <dt>Lenguaje</dt><dd>Emoticonos y expresiones empáticas.</dd>
+                <dt>Objetivo</dt><dd>Reforzar la confianza, empatizar con las preocupaciones, dar apoyo emocional e información clara sobre políticas internas.</dd>
+              </dl>
+              <div class="mini-traits" data-traits="media,alta,media,alta,baja"></div>
+            </article>
+            <article class="agent-card agent-card--fin">
+              <header><span class="agent-card__icon" aria-hidden="true">FN</span><div><h3>Finance Agent</h3><p>Preciso y formal</p></div></header>
+              <dl>
+                <dt>Tono</dt><dd>Formal, serio y meticuloso.</dd>
+                <dt>Lenguaje</dt><dd>Técnico y basado en hechos, con prioridad en números y datos verificables.</dd>
+                <dt>Objetivo</dt><dd>Respuestas exactas y concisas que reduzcan la ambigüedad y den confianza en decisiones financieras.</dd>
+              </dl>
+              <div class="mini-traits" data-traits="baja,alta,baja,media,baja"></div>
+            </article>
+          </div>
+
+          <div class="duel">
+            <div class="duel__head">
+              <h3 class="mini-title">Misma pregunta, dos agentes</h3>
+              <div class="seg" id="duelQuestions" role="group" aria-label="Pregunta del empleado"></div>
+            </div>
+            <div class="duel__grid">
+              <div class="chat chat--light"><div class="bubble bubble--user" id="duelQ"></div><div class="bubble bubble--bot bubble--hr" id="duelHR"></div><small class="muted">HR Agent</small></div>
+              <div class="chat chat--light"><div class="bubble bubble--user" id="duelQ2"></div><div class="bubble bubble--bot bubble--fin" id="duelFIN"></div><small class="muted">Finance Agent</small></div>
+            </div>
+            <p class="verdict" id="duelNote"></p>
+          </div>
+
+          <div class="prompt-box prompt-box--static">
+            <div class="prompt-box__bar"><span class="tagline">Prompt del HR Agent (de la clase)</span><button class="mini-button" type="button" data-copy="#hrPrompt">Copiar</button></div>
+<pre id="hrPrompt">Eres un Agente de Recursos Humanos (HR Agent). Tus rasgos de personalidad siguen el modelo de los Cinco Grandes:
+- Apertura: MEDIA
+- Responsabilidad: ALTA
+- Extraversión: MEDIA
+- Amabilidad: ALTA
+- Neuroticismo: BAJO
+
+Tu función es dar respuestas claras, precisas y empáticas sobre temas de Recursos Humanos. Debes ser profesional, accesible y comprensivo en todas las interacciones. Transmite apoyo al empleado, al tiempo que mantienes precisión y apego a las políticas de la empresa.</pre>
+          </div>
+          <button class="checkpoint" type="button" data-checkpoint="empresa"><span class="checkpoint__box"></span><span>Distingo la personalidad de cada agente</span></button>
+        </section>
+
+        <!-- ============ 07 · EJERCICIO ============ -->
+        <section id="ejercicio" class="station" data-station="ejercicio">
+          <header class="station__head">
+            <span class="station__num">07</span>
+            <div>
+              <span class="eyebrow">Ejercicio práctico · RA 6</span>
+              <h2>Misión: diseña el agente que la empresa necesita</h2>
+              <p>Elige un caso, ajusta los cinco rasgos y completa la ficha. El evaluador te dice qué tan bien encaja tu diseño con el puesto y por qué. Cuando pases de <strong>80 puntos</strong>, descarga tu agente y llévalo al laboratorio.</p>
+            </div>
+          </header>
+
+          <div class="cases" id="cases" role="radiogroup" aria-label="Caso del ejercicio"></div>
+
+          <div class="workshop">
+            <form class="sheet" id="sheet" autocomplete="off">
+              <h3 class="mini-title">Ficha del agente</h3>
+              <label class="field"><span>Nombre del agente</span><input id="fNombre" type="text" maxlength="40" placeholder="Ej.: Alki, mentor de programación" /></label>
+              <div class="knobs knobs--compact" id="exKnobs"></div>
+              <label class="field"><span>Conocimiento del dominio <small>(una línea por dato que el agente debe conocer; mínimo 3)</small></span><textarea id="fDominio" rows="3" placeholder="Horarios de los Campers&#10;Ruta de aprendizaje de JavaScript&#10;Reglas de entrega de proyectos"></textarea></label>
+              <label class="field"><span>Tono de comunicación</span><input id="fTono" type="text" maxlength="120" placeholder="Ej.: cercano, paciente y motivador" /></label>
+              <label class="field"><span>Lenguaje</span><input id="fLenguaje" type="text" maxlength="160" placeholder="Ej.: técnico explicado con ejemplos simples" /></label>
+              <label class="field"><span>Objetivo</span><textarea id="fObjetivo" rows="2" maxlength="300" placeholder="¿Para qué existe este agente?"></textarea></label>
+              <label class="field"><span>Límites <small>(qué nunca debe hacer)</small></span><textarea id="fLimites" rows="2" maxlength="300" placeholder="Ej.: no entrega la solución completa del reto; no inventa datos"></textarea></label>
+            </form>
+
+            <div class="evaluator">
+              <div class="score-ring" id="scoreRing"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="score-ring__bg" /><circle cx="60" cy="60" r="52" class="score-ring__fg" id="scoreArc" /></svg><div><b id="scoreValue">0</b><small>/ 100</small></div></div>
+              <ul class="checks" id="checks" aria-live="polite"></ul>
+              <div class="prompt-box">
+                <div class="prompt-box__bar"><span class="tagline">Tu prompt de sistema</span><button class="mini-button" type="button" data-copy="#exPrompt">Copiar</button></div>
+                <pre id="exPrompt"></pre>
+              </div>
+              <div class="export">
+                <button class="primary-button" type="button" id="downloadJson" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" /></svg><span>Descargar persona.json</span></button>
+                <button class="mini-button" type="button" id="downloadMd" disabled>Descargar ficha .md</button>
+              </div>
+            </div>
+          </div>
+
+          <details class="deliver" open>
+            <summary>Entrega del ejercicio</summary>
+            <ol>
+              <li>Haz <em>fork</em> de este repositorio y crea la rama <code>feat/agente-&lt;tu-nombre&gt;</code>.</li>
+              <li>Guarda tu <code>persona.json</code> en <code>laboratorios/agente-personalidad/personas/</code> con tu nombre (por ejemplo <code>personas/ana-lopez.json</code>).</li>
+              <li>Corre <code>npm test</code> dentro de <code>laboratorios/agente-personalidad</code>: valida que tu ficha esté completa.</li>
+              <li>Prueba tu agente con un modelo real (estación 08) usando los <strong>tres mensajes de prueba</strong> y pega las respuestas en <code>personas/&lt;tu-nombre&gt;.md</code>.</li>
+              <li>Abre un <em>pull request</em> con una reflexión corta: ¿qué rasgo cambió más la respuesta? ¿Qué límite tuviste que reforzar?</li>
+            </ol>
+            <div class="rubric" id="rubric"></div>
+          </details>
+          <button class="checkpoint" type="button" data-checkpoint="ejercicio"><span class="checkpoint__box"></span><span>Diseñé mi agente (80 puntos o más)</span></button>
+        </section>
+
+        <!-- ============ 08 · LABORATORIO ============ -->
+        <section id="laboratorio" class="station" data-station="laboratorio">
+          <header class="station__head">
+            <span class="station__num">08</span>
+            <div>
+              <span class="eyebrow">Laboratorio · RA 6</span>
+              <h2>Ponlo a prueba con un modelo de verdad</h2>
+              <p>La simulación de esta página usa frases preparadas. Ahora toca ver cómo responde un modelo real con tu prompt. Puedes hacerlo sin programar (con tu cuenta de Claude, ChatGPT o Gemini) o con el script del repositorio.</p>
+            </div>
+          </header>
+
+          <div class="lab-tabs" role="tablist" aria-label="Forma de probar">
+            <button type="button" role="tab" aria-selected="true" data-labtab="chat">Sin código (chat)</button>
+            <button type="button" role="tab" aria-selected="false" data-labtab="node">Con código (Node.js)</button>
+          </div>
+
+          <div class="lab-pane" data-labpane="chat">
+            <ol class="steps">
+              <li><b>Copia tu prompt</b> de la estación 07 (botón «Copiar»).</li>
+              <li><b>Ábrelo como instrucciones del agente</b>: en Claude, un <em>Proyecto</em> con instrucciones personalizadas; en ChatGPT, un <em>GPT</em> o las instrucciones de un proyecto; en Gemini, una <em>Gem</em>. Si no tienes esas opciones, pégalo como primer mensaje.</li>
+              <li><b>Envía los tres mensajes de prueba</b> y marca lo que observaste.</li>
+            </ol>
+            <div class="tests" id="tests"></div>
+          </div>
+
+          <div class="lab-pane" data-labpane="node" hidden>
+            <p>En <code>laboratorios/agente-personalidad</code> hay un programa de consola que lee tu <code>persona.json</code>, arma el prompt y conversa. <strong>Sin clave funciona en modo simulado</strong>; con <code>ANTHROPIC_API_KEY</code> u <code>OPENAI_API_KEY</code> usa el modelo real (eso genera cargos por tokens; una suscripción de chat no incluye la API).</p>
+<pre class="term"><span class="c-com"># 1. Entra al laboratorio (necesitas Node.js 20 o superior)</span>
+cd laboratorios/agente-personalidad
+
+<span class="c-com"># 2. Valida las fichas de personas/ (sin instalar nada)</span>
+npm test
+
+<span class="c-com"># 3. Conversa con un agente (modo simulado si no hay clave)</span>
+node chat.mjs personas/hr-agent.json "No me alcanzó la quincena"
+
+<span class="c-com"># 4. Con un modelo real (opcional)</span>
+export ANTHROPIC_API_KEY="tu-clave"   <span class="c-com"># o OPENAI_API_KEY</span>
+node chat.mjs personas/mi-agente.json</pre>
+            <p class="muted small">Sin mensaje en la línea de comandos, abre una conversación interactiva. Escribe <code>/prompt</code> para ver el prompt de sistema y <code>/salir</code> para terminar.</p>
+          </div>
+          <button class="checkpoint" type="button" data-checkpoint="laboratorio"><span class="checkpoint__box"></span><span>Probé mi agente con un modelo real</span></button>
+        </section>
+
+        <!-- ============ 09 · RETO ============ -->
+        <section id="reto" class="station" data-station="reto">
+          <header class="station__head">
+            <span class="station__num">09</span>
+            <div>
+              <span class="eyebrow">Cierre</span>
+              <h2>Reto final: 10 preguntas</h2>
+              <p>Responde sin mirar. Cada respuesta te explica el porqué.</p>
+            </div>
+          </header>
+          <div class="quiz" id="quiz"></div>
+          <div class="quiz-result" id="quizResult" hidden></div>
+
+          <div class="glossary">
+            <div class="glossary__head">
+              <h3 class="mini-title">Glosario</h3>
+              <label class="search"><span class="sr-only">Buscar término</span><input id="glossSearch" type="search" placeholder="Buscar: rasgo, prompt, OCEAN…" /></label>
+            </div>
+            <dl class="glossary__list" id="glossList"></dl>
+          </div>
+
+          <div class="refs">
+            <h3 class="mini-title">Para seguir aprendiendo</h3>
+            <ul>
+              <li><a href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/system-prompts" target="_blank" rel="noopener">Anthropic · Dar un rol a Claude con el prompt de sistema</a></li>
+              <li><a href="https://platform.openai.com/docs/guides/text" target="_blank" rel="noopener">OpenAI · Instrucciones y roles en la generación de texto</a></li>
+              <li><a href="https://es.wikipedia.org/wiki/Modelo_de_los_cinco_grandes" target="_blank" rel="noopener">Wikipedia · Modelo de los cinco grandes</a></li>
+              <li><a href="https://ipip.ori.org/" target="_blank" rel="noopener">IPIP · Banco público de ítems de personalidad</a></li>
+            </ul>
+            <p class="muted small">Basado en la presentación «Fundamentos de Simulación de Personalidades» de Inteligencia Artificial II (Eduin Salas Viloria, Campuslands).</p>
+          </div>
+          <button class="checkpoint" type="button" data-checkpoint="reto"><span class="checkpoint__box"></span><span>Terminé el reto final</span></button>
+        </section>
+
+        <footer class="footer">
+          <img src="assets/img/orbit.png" alt="" width="72" height="72" />
+          <p><strong>Campuslands Guatemala</strong> · Inteligencia Artificial II · Fundamentos de simulación de personalidades.<br /><span class="muted">Hecho con cariño para nuestros Campers. Código abierto con licencia MIT.</span></p>
+        </footer>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js?v=2" defer></script>
+  </body>
+</html>
