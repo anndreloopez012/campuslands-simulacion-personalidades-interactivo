@@ -9,3 +9,6 @@ graphify-out/
 .claude/
 __pycache__/
 .venv/
+.hyperframes/
+motion/explicadores/scenes/*/.hyperframes/
+renders/
