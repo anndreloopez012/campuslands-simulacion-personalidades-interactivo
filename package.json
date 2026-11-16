@@ -1,0 +1,21 @@
+{
+  "name": "campuslands-simulacion-personalidades-interactivo-shen",
+  "version": "1.0.0",
+  "description": "[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Guía%20interactiva-6b3fe0)](https://anndreloopez012.github.io/campuslands-simulacion-personalidades-interactivo/)\r [![HyperFrames](https://img.shields.io/badge/HyperFrames-7%20videos%20explicativos-6b3fe0)](motion/explicadores)\r [![Big Five](https://img.shields.io/badge/Big%20Five-OCEAN-f26b1d)](#ruta-de-aprendizaje)\r [![Node.js](https://img.shields.io/badge/Node.js-20%2B%20ESM-339933?logo=node.js&logoColor=white)](laboratorios/agente-personalidad)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ixenbrandonestiben-lang/campuslands-simulacion-personalidades-interactivo-shen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/ixenbrandonestiben-lang/campuslands-simulacion-personalidades-interactivo-shen/issues"
+  },
+  "homepage": "https://github.com/ixenbrandonestiben-lang/campuslands-simulacion-personalidades-interactivo-shen#readme"
+}
