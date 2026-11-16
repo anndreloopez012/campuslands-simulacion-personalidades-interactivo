@@ -1,0 +1,11 @@
+.DS_Store
+.env
+*.log
+node_modules/
+coverage/
+.superpowers/
+graphify-out
+graphify-out/
+.claude/
+__pycache__/
+.venv/
