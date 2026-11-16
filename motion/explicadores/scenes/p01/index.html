@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>P01 · Qué es simular una personalidad</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="shared/teacher.css" />
+    <script src="shared/teacher.js"></script>
+    <style>
+      .lines { position: relative; width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+      .lines div { font-size: 25px; line-height: 1.22; padding: 9px 14px; border-radius: 12px; background: rgba(255, 255, 255, .06); color: #f4f0ff; }
+      .lines div.ans { background: rgba(255, 255, 255, .92); color: #1b1426; font-weight: 650; }
+      .bub { position: absolute; padding: 20px 26px; border-radius: 26px; font-size: 27px; line-height: 1.3; font-weight: 600; box-shadow: 0 18px 40px rgba(0,0,0,.4); }
+      .bub.user { background: #3d6bff; color: #fff; border-bottom-right-radius: 8px; }
+      .bub.bot { background: #f4f0ff; color: #1b1426; border-bottom-left-radius: 8px; }
+      .fig { position: absolute; display: flex; flex-direction: column; align-items: center; }
+      .fig .h { width: 80px; height: 80px; border-radius: 50%; }
+      .fig .b { width: 130px; height: 150px; margin-top: 8px; border-radius: 60px 60px 14px 14px; }
+      .lbl { position: absolute; font-weight: 800; font-size: 26px; color: #e9e1ff; }
+
+      #prompt { left: 0; top: 20px; width: 520px; }
+      #model { left: 630px; top: 40px; width: 400px; height: 230px; }
+      #say-par { left: 1100px; top: 0; }
+      .par { top: 50px; }
+      #pa { left: 1100px; } #pb { left: 1430px; } #pc { left: 1100px; top: 130px; } #pd { left: 1430px; top: 130px; } #pe { left: 1100px; top: 210px; } #pf { left: 1430px; top: 210px; }
+      #si { left: 0; top: 330px; width: 500px; height: 240px; }
+      #no { left: 530px; top: 330px; width: 500px; height: 240px; }
+      #out { left: 1060px; top: 320px; width: 420px; height: 250px; }
+      #out .lines div { font-size: 23px; }
+      #ok1 { left: 430px; top: 300px; } #no1 { left: 960px; top: 300px; }
+      /* Analogía: actriz de doblaje */
+      .stand { position: absolute; left: 200px; top: 250px; width: 12px; height: 300px; background: #8f86a3; border-radius: 6px; }
+      .micro { position: absolute; left: 160px; top: 140px; width: 92px; height: 140px; border-radius: 46px; background: #b997ff; box-shadow: inset 0 -20px 0 #7a3cff; }
+      .guion { position: absolute; left: 330px; top: 120px; width: 330px; padding: 20px 24px; border-radius: 14px; background: #f6f2ff; color: #1b1426; font-family: "JetMono"; font-size: 23px; line-height: 1.4; }
+      .guion b { font-family: "Figtree"; color: #7a3cff; }
+      .mascara { position: absolute; top: 430px; width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 22px; color: #1b1426; }
+      #m1 { left: 300px; background: #ffc45a; } #m2 { left: 440px; background: #5bdcff; } #m3 { left: 580px; background: #ff7ab6; }
+
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="p01" data-start="0" data-duration="42" data-width="1920" data-height="1080" data-fps="30">
+      <div id="board">
+        <svg class="wires" viewBox="0 0 1776 600">
+          <path class="w1" pathLength="1" d="M528 150H622" />
+          <path class="w2" pathLength="1" d="M1038 150H1092" />
+        </svg>
+        <div class="paper" id="prompt"><b>Instrucciones</b><br />Actúa como tutor paciente.<br />Tono: cálido<br />Nivel: principiante<br />Usuario: Camper nuevo</div>
+        <div class="card accent" id="model"><span data-icon="brain"></span><h3>El modelo</h3><p>Ajusta cómo responde según el prompt</p></div>
+        <div class="say" id="say-par">Se ajusta desde el prompt:</div>
+        <span class="tag par" id="pa">Tono</span><span class="tag par" id="pb">Nivel técnico</span><span class="tag par" id="pc">Estilo pedagógico</span>
+        <span class="tag par" id="pd">Formalidad</span><span class="tag par" id="pe">Tipo de usuario</span><span class="tag par" id="pf">Contexto de uso</span>
+        <div class="card green" id="si"><span data-icon="check"></span><h3>Sí es</h3><p>Una representación lingüística y conductual basada en instrucciones.</p></div>
+        <div class="card red" id="no"><span data-icon="x"></span><h3>No es</h3><p>Emociones propias, conciencia ni una personalidad real.</p></div>
+        <div class="card cyan" id="out"><h3>Mismo modelo</h3><div class="lines"><div>Prompt A: «¡Tranqui, te explico paso a paso!»</div><div>Prompt B: «Defina primero el término.»</div></div></div>
+      </div>
+    </div>
+    <script>
+      const T = Teacher.setup({
+        cls: 1, point: 1,
+        title: "¿Qué es <em>simular</em> una personalidad?",
+        headTitle: "Qué es simular una personalidad",
+        question: "Un agente puede sonar cálido, serio o entusiasta. ¿De dónde sale ese carácter si el modelo no siente nada?",
+        analogy: {
+          art: `<div class="stand"></div><div class="micro"></div>
+            <div class="guion"><b>GUION</b><br />Personaje: tutora<br />Tono: alegre<br />«¡Lo lograste!»</div>
+            <div class="mascara" id="m1">alegre</div><div class="mascara" id="m2">seria</div><div class="mascara" id="m3">tierna</div>`,
+          title: "La actriz de doblaje",
+          text: "Suena furiosa o tierna según el <em>guion</em>, pero no siente eso. El <em>prompt</em> es el guion del modelo.",
+        },
+        steps: [
+          { label: "Las instrucciones", caption: "Simular es <em>diseñar instrucciones</em> para que el modelo adopte un estilo, un tono o un rol." },
+          { label: "Los parámetros", caption: "Desde el prompt ajustas <em>tono, nivel técnico</em>, formalidad, tipo de usuario y contexto." },
+          { label: "Lo que no es", caption: "Es una representación del lenguaje. <em>No hay</em> emociones, conciencia ni personalidad real." },
+          { label: "Mismo modelo", caption: "Cambias el prompt y el <em>mismo modelo</em> responde con otro estilo." },
+        ],
+        takeaway: {
+          title: "Simular es <em>dar un guion</em>: cambia el estilo, no la naturaleza.",
+          text: "Tono, nivel técnico y formalidad se ajustan desde el prompt. Las emociones no.",
+        },
+      });
+      const s = T.stepAt;
+
+      T.tl.set([".t-analogy-art .mascara", ".t-analogy-art .guion"], { opacity: 0 }, 0);
+      T.slide("@.t-analogy-art .guion", T.analogyAt(.6), { x: 40, y: 0 });
+      T.pop("@.t-analogy-art .mascara", T.analogyAt(2), .5);
+      T.pulse("@.t-analogy-art .micro", T.analogyAt(4.2), 1.08);
+      T.pulse("@.t-analogy-art #m1", T.analogyAt(5.4), 1.12);
+      T.tl.set(["#board .card", "#board .paper", "#board .tag", "#board .say"], { opacity: 0 }, 0);
+      T.tl.set("#out .lines div", { opacity: 0 }, 0);
+      // 1 · Instrucciones
+      T.slide("#prompt", s(0, .1), { x: -30, y: 0 });
+      T.draw(".w1", s(0, 1.4), .5);
+      T.pop("#model", s(0, 1.8));
+      T.glow("#model", s(0, 3.2));
+      // 2 · Parámetros
+      T.draw(".w2", s(1, .05), .4);
+      T.fadeIn("#say-par", s(1, .2));
+      T.pop(".par", s(1, .5), .3);
+      // 3 · Lo que no es
+      T.pop("#si", s(2, .1));
+      T.pop("#no", s(2, 1.6));
+      T.pulse("#no", s(2, 3.2), 1.05);
+      // 4 · Mismo modelo
+      T.pop("#out", s(3, .1));
+      T.slide("#out .lines div", s(3, .6), { x: -20, y: 0, stagger: .8 });
+      T.glow("#out", s(3, 3), "#5bdcff");
+      window.__timelines["p01"] = T.tl;
+    </script>
+  </body>
+</html>

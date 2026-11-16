@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>P02 · Anatomía de un asistente eficaz</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="shared/teacher.css" />
+    <script src="shared/teacher.js"></script>
+    <style>
+      .lines { position: relative; width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+      .lines div { font-size: 25px; line-height: 1.22; padding: 9px 14px; border-radius: 12px; background: rgba(255, 255, 255, .06); color: #f4f0ff; }
+      .lines div.ans { background: rgba(255, 255, 255, .92); color: #1b1426; font-weight: 650; }
+      .bub { position: absolute; padding: 20px 26px; border-radius: 26px; font-size: 27px; line-height: 1.3; font-weight: 600; box-shadow: 0 18px 40px rgba(0,0,0,.4); }
+      .bub.user { background: #3d6bff; color: #fff; border-bottom-right-radius: 8px; }
+      .bub.bot { background: #f4f0ff; color: #1b1426; border-bottom-left-radius: 8px; }
+      .fig { position: absolute; display: flex; flex-direction: column; align-items: center; }
+      .fig .h { width: 80px; height: 80px; border-radius: 50%; }
+      .fig .b { width: 130px; height: 150px; margin-top: 8px; border-radius: 60px 60px 14px 14px; }
+      .lbl { position: absolute; font-weight: 800; font-size: 26px; color: #e9e1ff; }
+
+      #intent { left: 560px; top: 0; width: 620px; height: 110px; }
+      #intent h3 { font-size: 36px; }
+      #n-int { left: 1220px; top: 10px; max-width: 360px; }
+      #p1 { left: 100px; top: 140px; width: 660px; height: 310px; }
+      #p2 { left: 840px; top: 140px; width: 660px; height: 310px; }
+      #p1 h3, #p2 h3 { font-size: 31px; white-space: nowrap; }
+      #p1 .lines div, #p2 .lines div { font-size: 24px; }
+      #roof { left: 100px; top: 476px; width: 1400px; height: 104px; padding: 0 30px; }
+      #roof h3 { font-size: 34px; white-space: nowrap; }
+      #roof p { font-size: 28px; color: #f4f0ff; }
+      /* Analogía: el buen médico */
+      .doc { left: 140px; top: 200px; } .doc .h { background: #ffc45a; } .doc .b { background: #f4f0ff; width: 150px; height: 200px; }
+      .esteto { position: absolute; left: 160px; top: 320px; width: 110px; height: 90px; border: 8px solid #5bdcff; border-top: 0; border-radius: 0 0 60px 60px; }
+      .globo { position: absolute; left: 330px; top: 110px; width: 360px; padding: 22px 26px; border-radius: 26px 26px 26px 6px; background: #f4f0ff; color: #1b1426; font-size: 27px; font-weight: 700; line-height: 1.3; }
+      .libro { position: absolute; left: 380px; top: 400px; width: 250px; height: 150px; border-radius: 10px; background: #7a3cff; color: #fff; display: grid; place-items: center; font-family: "Bricolage"; font-size: 30px; font-weight: 800; }
+
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="p02" data-start="0" data-duration="42" data-width="1920" data-height="1080" data-fps="30">
+      <div id="board">
+        <svg class="wires" viewBox="0 0 1776 600">
+          <path class="w1" pathLength="1" d="M430 454V472" />
+          <path class="w2" pathLength="1" d="M1170 454V472" />
+        </svg>
+        <div class="card row yellow" id="intent"><span data-icon="heart"></span><h3>Intención de ayudar</h3></div>
+        <div class="note" id="n-int">Necesaria, pero no basta.</div>
+        <div class="card cyan" id="p1"><h3>Pilar 1 · Conocimiento del dominio</h3>
+          <div class="lines"><div>Políticas internas de la empresa</div><div>Estado actual de la fuerza laboral</div><div>Información sensible de los empleados</div></div></div>
+        <div class="card accent" id="p2"><h3>Pilar 2 · Habilidades comunicativas</h3>
+          <div class="lines"><div>Un lenguaje compartido con quien pregunta</div><div>Estilo según el tema</div><div>Estilo según quien escucha</div></div></div>
+        <div class="card row green" id="roof"><span data-icon="check"></span><h3>Asistente eficaz:</h3><p>«Te quedan 6 de tus 15 días de vacaciones. ¿Te ayudo a pedirlos?»</p></div>
+      </div>
+    </div>
+    <script>
+      const T = Teacher.setup({
+        cls: 1, point: 2,
+        title: "Anatomía de un <em>asistente eficaz</em>",
+        headTitle: "Anatomía de un asistente eficaz",
+        question: "Dos asistentes quieren ayudarte de verdad. ¿Por qué uno te resuelve y el otro te deja igual?",
+        analogy: {
+          art: `<div class="fig doc"><div class="h"></div><div class="b"></div></div><div class="esteto"></div>
+            <div class="globo">«Es una gripe: descansa tres días y toma agua.»</div><div class="libro">Medicina</div>`,
+          title: "El buen médico",
+          text: "Un buen médico <em>sabe</em> medicina y además <em>te lo explica</em> sin tecnicismos. Si falta una de las dos, no te ayuda.",
+        },
+        steps: [
+          { label: "Querer ayudar", caption: "La <em>intención</em> de ayudar es el punto de partida, pero no alcanza sola." },
+          { label: "El dominio", caption: "Pilar 1: información <em>actual, precisa y contextualizada</em> para no dar generalidades vacías." },
+          { label: "La comunicación", caption: "Pilar 2: un <em>lenguaje compartido</em> y un estilo alineado con el tema y con quien escucha." },
+          { label: "Los dos juntos", caption: "Con los dos pilares la respuesta es <em>exacta y clara</em>, y orienta a la acción." },
+        ],
+        takeaway: {
+          title: "Eficaz = <em>saber</em> del tema + <em>saber explicarlo</em>.",
+          text: "La personalidad que simulas vive en el segundo pilar: decide cómo suena el conocimiento.",
+        },
+      });
+      const s = T.stepAt;
+
+      T.tl.set([".t-analogy-art .globo", ".t-analogy-art .libro"], { opacity: 0 }, 0);
+      T.pop("@.t-analogy-art .doc", T.analogyAt(.4));
+      T.pop("@.t-analogy-art .libro", T.analogyAt(1.6));
+      T.slide("@.t-analogy-art .globo", T.analogyAt(3), { x: -30, y: 0 });
+      T.pulse("@.t-analogy-art .globo", T.analogyAt(5.5), 1.05);
+      T.tl.set(["#board .card", "#board .note", "#board .lines div"], { opacity: 0 }, 0);
+      // 1 · Intención
+      T.pop("#intent", s(0, .1));
+      T.slide("#n-int", s(0, 1.4), { x: -20, y: 0 });
+      T.pulse("#intent", s(0, 3), 1.05);
+      // 2 · Dominio
+      T.fadeOut("#n-int", s(1, 0));
+      T.pop("#p1", s(1, .1));
+      T.slide("#p1 .lines div", s(1, .7), { x: -20, y: 0, stagger: .6 });
+      T.glow("#p1", s(1, 3.2), "#5bdcff");
+      // 3 · Comunicación
+      T.pop("#p2", s(2, .1));
+      T.slide("#p2 .lines div", s(2, .7), { x: -20, y: 0, stagger: .6 });
+      T.glow("#p2", s(2, 3.2));
+      // 4 · Los dos
+      T.draw(".w1, .w2", s(3, .05), .4);
+      T.pop("#roof", s(3, .4));
+      T.glow("#roof", s(3, 2.6), "#45e0a8");
+      window.__timelines["p02"] = T.tl;
+    </script>
+  </body>
+</html>

@@ -121,6 +121,101 @@ const observador = new IntersectionObserver((entradas) => {
 }, { rootMargin: "-35% 0px -60% 0px" });
 $$(".station").forEach((s) => observador.observe(s));
 
+/* ================= Videos explicativos (HyperFrames) ================= */
+// Tiempos del kit «modo maestro»: portada 0 s, analogía 6,2 s, pizarra desde 15,2 s, idea clave en D − 6,6 s.
+const EXPLICADORES = {
+  p01: { titulo: "¿Qué es simular una personalidad?", d: 42, pasos: ["Las instrucciones", "Los parámetros", "Lo que no es", "Mismo modelo"] },
+  p02: { titulo: "Anatomía de un asistente eficaz", d: 42, pasos: ["Querer ayudar", "El dominio", "La comunicación", "Los dos juntos"] },
+  p03: { titulo: "El modelo Big Five", d: 44, pasos: ["Apertura", "Responsabilidad", "Extraversión", "Amabilidad", "Neuroticismo"] },
+  p04: { titulo: "Cada rasgo, su trabajo", d: 44, pasos: ["Apertura", "Responsabilidad", "Extraversión", "Amabilidad", "Neuroticismo"] },
+  p05: { titulo: "Del rasgo al prompt", d: 44, pasos: ["Las puntuaciones", "La instrucción", "El mensaje", "La respuesta"] },
+  p06: { titulo: "Agentes empresariales", d: 44, pasos: ["La pregunta", "HR Agent", "Finance Agent", "El prompt"] },
+  p07: { titulo: "Diseña y prueba tu agente", d: 44, pasos: ["El caso", "Los rasgos", "La ficha", "La prueba", "La entrega"] },
+};
+
+function capitulos(id) {
+  const e = EXPLICADORES[id];
+  const inicio = 15.2, fin = e.d - 6.6 - 0.4;
+  const dur = (fin - inicio) / e.pasos.length;
+  return [
+    { t: 0, label: "Pregunta" },
+    { t: 6.2, label: "Analogía" },
+    ...e.pasos.map((label, i) => ({ t: inicio + i * dur, label, n: i + 1 })),
+    { t: e.d - 6.6, label: "Idea clave" },
+  ];
+}
+const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+
+function botonesCapitulos(id, onSeek) {
+  return capitulos(id).map((c) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.dataset.t = c.t;
+    b.innerHTML = `<i>${c.n ?? (c.label === "Pregunta" ? "?" : c.label === "Analogía" ? "≈" : "★")}</i>${esc(c.label)}`;
+    b.title = `Ir a ${fmt(c.t)}`;
+    b.addEventListener("click", () => onSeek(c.t));
+    return b;
+  });
+}
+function marcarCapitulo(contenedor, t) {
+  const bs = $$("button", contenedor);
+  let actual = 0;
+  bs.forEach((b, i) => { if (t + 0.05 >= Number(b.dataset.t)) actual = i; });
+  bs.forEach((b, i) => b.classList.toggle("is-current", i === actual));
+}
+
+function montarExplicador(fig) {
+  const id = fig.dataset.explainer;
+  const e = EXPLICADORES[id];
+  const n = Number(id.slice(1));
+  fig.innerHTML = `
+    <button class="explainer__screen" type="button" style="background-image:url('assets/motion/posters/${id}.jpg')" aria-label="Reproducir video: ${esc(e.titulo)}">
+      <span class="explainer__play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 14 8-14 8z" /></svg></span>
+    </button>
+    <div class="explainer__progress"><span></span></div>
+    <figcaption class="explainer__meta"><b>Punto ${n} · ${esc(e.titulo)}</b><small>${fmt(e.d)}</small><button class="explainer__expand" type="button">Pantalla grande</button></figcaption>
+    <div class="chapters" aria-label="Capítulos del video"></div>`;
+  const pantalla = $(".explainer__screen", fig);
+  const barra = $(".explainer__progress span", fig);
+  const caps = $(".chapters", fig);
+  let video = null;
+  const asegurarVideo = () => {
+    if (video) return video;
+    video = document.createElement("video");
+    video.src = `assets/motion/${id}.mp4`;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.poster = `assets/motion/posters/${id}.jpg`;
+    video.addEventListener("timeupdate", () => { barra.style.width = `${(video.currentTime / (video.duration || e.d)) * 100}%`; marcarCapitulo(caps, video.currentTime); });
+    video.addEventListener("ended", () => { pantalla.classList.remove("is-playing"); ganar(`video:${id}`, PUNTOS.juego, `Viste el punto ${n} completo`); });
+    video.addEventListener("pause", () => pantalla.classList.remove("is-playing"));
+    video.addEventListener("play", () => pantalla.classList.add("is-playing"));
+    video.addEventListener("error", () => { pantalla.insertAdjacentHTML("beforeend", '<span class="explainer__missing">El video aún no está renderizado. Ejecuta <code>node motion/explicadores/render-all.mjs</code>.</span>'); });
+    pantalla.prepend(video);
+    return video;
+  };
+  pantalla.addEventListener("click", () => { const v = asegurarVideo(); v.paused ? v.play().catch(() => {}) : v.pause(); });
+  caps.append(...botonesCapitulos(id, (t) => { const v = asegurarVideo(); v.currentTime = t; v.play().catch(() => {}); }));
+  $(".explainer__expand", fig).addEventListener("click", () => { video?.pause(); abrirTeatro(id, video ? video.currentTime : 0); });
+}
+$$("[data-explainer]").forEach(montarExplicador);
+
+const teatro = $("#theater");
+const teatroVideo = $("#theaterVideo");
+function abrirTeatro(id, t = 0) {
+  teatroVideo.src = `assets/motion/${id}.mp4`;
+  teatroVideo.poster = `assets/motion/posters/${id}.jpg`;
+  const caps = $("#theaterChapters");
+  caps.replaceChildren(...botonesCapitulos(id, (s) => { teatroVideo.currentTime = s; teatroVideo.play().catch(() => {}); }));
+  teatroVideo.ontimeupdate = () => marcarCapitulo(caps, teatroVideo.currentTime);
+  teatro.showModal();
+  teatroVideo.currentTime = t;
+  teatroVideo.play().catch(() => {});
+}
+$("[data-close-theater]").addEventListener("click", () => teatro.close());
+teatro.addEventListener("close", () => teatroVideo.pause());
+teatro.addEventListener("click", (e) => { if (e.target === teatro) teatro.close(); });
+
 /* ================= Rasgos (datos compartidos) ================= */
 const RASGOS = [
   { k: "o", nombre: "Apertura", en: "Openness", clave: "apertura" },

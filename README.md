@@ -1,6 +1,7 @@
 # Campuslands · Fundamentos de Simulación de Personalidades (Estación Personas)
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Guía%20interactiva-6b3fe0)](https://anndreloopez012.github.io/campuslands-simulacion-personalidades-interactivo/)
+[![HyperFrames](https://img.shields.io/badge/HyperFrames-7%20videos%20explicativos-6b3fe0)](motion/explicadores)
 [![Big Five](https://img.shields.io/badge/Big%20Five-OCEAN-f26b1d)](#ruta-de-aprendizaje)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B%20ESM-339933?logo=node.js&logoColor=white)](laboratorios/agente-personalidad)
 
@@ -15,6 +16,7 @@ Basada en la presentación «Fundamentos de Simulación de Personalidades» (Int
 ## Qué incluye
 
 - **Página interactiva** (`index.html`, `styles.css`, `app.js`): 10 estaciones con progreso, XP, cronómetro de 60 minutos y modo proyector para la clase. Misma base visual que las demás guías de Campuslands.
+- **7 videos explicativos animados con HyperFrames**, uno por concepto (estaciones 01 a 07), en «modo maestro»: pregunta, analogía, pizarra paso a paso con subtítulos e idea clave. Cada video tiene capítulos para saltar a un paso y modo pantalla grande.
 - **6 simuladores que funcionan sin clave**:
   - *¿Mito o realidad?*: qué es y qué no es simular una personalidad.
   - *Enciende y apaga los pilares*: la misma pregunta con y sin conocimiento del dominio y habilidades comunicativas.
@@ -55,7 +57,19 @@ Basada en la presentación «Fundamentos de Simulación de Personalidades» (Int
 npx --yes http-server . -p 8766 -c-1
 ```
 
-Abre `http://localhost:8766`. También funciona abriendo `index.html` directamente.
+Abre `http://localhost:8766`. Los videos necesitan un servidor que permita saltar dentro del archivo (Range), por eso conviene usar `http-server` en vez de abrir el HTML con doble clic.
+
+### Videos (HyperFrames)
+
+Las escenas viven en `motion/explicadores/scenes/p01` a `p07` y comparten el kit «modo maestro» de `motion/explicadores/shared` (el mismo de la guía de API REST). Para volver a renderizarlas:
+
+```bash
+cd motion/explicadores
+node render-all.mjs          # las 7
+node render-all.mjs p03 p05  # solo algunas
+```
+
+Deja los videos en `assets/motion/` y los pósteres en `assets/motion/posters/`. Necesita Node.js y ffmpeg. Si cambias los pasos o la duración de una escena, actualiza `EXPLICADORES` en `app.js`.
 
 ### Laboratorio
 
@@ -91,7 +105,8 @@ Dentro de la conversación, `/prompt` muestra el prompt de sistema y `/salir` te
 
 ```
 ├── index.html, styles.css, app.js     # guía interactiva (estática, GitHub Pages)
-├── assets/                            # fuentes e imagen compartidas con las demás guías
+├── assets/                            # fuentes, imagen y videos (assets/motion)
+├── motion/explicadores/               # escenas HyperFrames y kit «modo maestro»
 └── laboratorios/agente-personalidad/
     ├── chat.mjs                       # agente de consola
     ├── src/personalidad.mjs           # prompt, validación y modo simulado
